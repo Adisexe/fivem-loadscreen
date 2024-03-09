@@ -1,0 +1,77 @@
+<html>
+    <head>
+        <link href="keks.css" rel="stylesheet" type="text/css" />
+        <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="parallax.js"></script>
+    </head>
+    <body>
+        <div id="front-background"></div>
+        <img id="light1" src="img/left_light.png">
+        <img id="light2" src="img/right_light.png">
+        <audio id="background_music" style="display: none;" width="400" controls autoplay>
+            <source src="music/zeze.mp3" type="audio/mpeg">
+        </audio>
+        <div id="ciekawostki">
+            <p id="title-ciekawostka">Ciekawostka</p>
+            <p id="ciekawostka-content"></p>
+        </div>
+        <img class="logo-glowne-bg" src="img/flexity-logo.png">
+        <img class="logo-glowne" src="img/flexity-logo.png">
+            <div class="letni">
+                <div class="loadbar"><div class="thingy"></div></div>
+            </div>
+        <div data-relative-input="true" id="scene">
+            <img id="palms1" data-depth='0.15' src="img/1layerpalms.png">
+            <img id="palms2" data-depth='0.05' src="img/2layerpalms.png">
+            <img id="background-img" data-depth='0.02' src="img/loadscreen.jpg">
+        </div>
+
+        <script type="text/javascript">
+
+            var scene = $('#scene').get(0);
+            var parallaxInstance = new Parallax(scene);
+
+            var audio = document.getElementById("background_music");
+            audio.volume = 0.1;
+                
+            var count = 0;
+            var thisCount = 0;
+
+            $.post('http://fivem_loadscreen/NUIFocusToggleON', JSON.stringify({}));
+
+            const handlers = {
+                startInitFunctionOrder(data)
+                {
+                    count = data.count;
+                },
+
+                initFunctionInvoking(data)
+                {
+                    document.querySelector('.thingy').style.left = '0%';
+                    document.querySelector('.thingy').style.width = ((data.idx / count) * 100) + '%';
+                },
+
+                startDataFileEntries(data)
+                {
+                    count = data.count;
+
+                    document.querySelector('.letni h3').innerHTML;
+                },
+
+                performMapLoadFunction(data)
+                {
+                    ++thisCount;
+
+                    document.querySelector('.thingy').style.left = '0%';
+                    document.querySelector('.thingy').style.width = ((thisCount / count) * 100) + '%';
+                }
+            };
+
+            window.addEventListener('message', function(e)
+            {
+                (handlers[e.data.eventName] || function() {})(e.data);
+            });
+        </script>
+    </body>
+</html>
